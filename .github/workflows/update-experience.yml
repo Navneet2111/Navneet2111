@@ -1,0 +1,77 @@
+
+name: Update Professional Experience
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-experience:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Calculate and update experience
+        run: |
+          python3 - <<'PY'
+          from datetime import date
+          import re
+
+          joining_date = date(2024, 2, 1)
+          today = date.today()
+
+          total_months = (
+              (today.year - joining_date.year) * 12
+              + today.month - joining_date.month
+          )
+
+          years = total_months // 12
+          months = total_months % 12
+
+          if years == 0:
+              experience = f"{months} months"
+          elif months == 0:
+              experience = f"{years} years"
+          else:
+              experience = f"{years} years {months} months"
+
+          with open("README.md", "r", encoding="utf-8") as f:
+              content = f.read()
+
+          pattern = r"<!-- EXPERIENCE_START -->.*?<!-- EXPERIENCE_END -->"
+          replacement = (
+              f"<!-- EXPERIENCE_START -->"
+              f"{experience}"
+              f"<!-- EXPERIENCE_END -->"
+          )
+
+          updated, count = re.subn(
+              pattern, lambda _: replacement, content,
+              count=1, flags=re.DOTALL
+          )
+
+          if count != 1:
+              raise ValueError("Experience markers not found in README.md")
+
+          with open("README.md", "w", encoding="utf-8") as f:
+              f.write(updated)
+          PY
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+
+          if git diff --cached --quiet; then
+            echo "No update required."
+          else
+            git commit -m "chore: update professional experience"
+            git push
+          fi
