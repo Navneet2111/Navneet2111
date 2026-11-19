@@ -13,7 +13,7 @@ I enjoy building modern web applications that combine clean design, smooth user 
 ## 👨‍💻 About Me
 
 - 💼 Currently working as a **Full Stack Developer at Zeksta Technology**.
-- 🚀 2.5+ years of professional experience in web development.
+- 🚀 2.10+ years of professional experience in web development.
 - ⚛️ Focused on building modern applications using **React.js and Next.js**.
 - 🎨 Interested in UI development, responsive design, and performance optimization.
 - 🔌 Experienced in API integration, state management, and frontend-backend communication.
